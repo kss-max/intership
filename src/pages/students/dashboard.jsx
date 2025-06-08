@@ -128,7 +128,6 @@ function Dashboard() {
 
   useEffect(() => {
     const filtered = jobPostings.filter(job => {
-      // Skills filter
       if (filters.skills.length > 0) {
         const hasRequiredSkills = filters.skills.every(skill =>
           job.requirements.some(req => req.toLowerCase().includes(skill.toLowerCase()))
@@ -136,22 +135,18 @@ function Dashboard() {
         if (!hasRequiredSkills) return false;
       }
 
-      // Company filter
       if (filters.company && !job.company.toLowerCase().includes(filters.company.toLowerCase())) {
         return false;
       }
 
-      // Location filter
       if (filters.location && !job.location.toLowerCase().includes(filters.location.toLowerCase())) {
         return false;
       }
 
-      // Verification type filter
       if (filters.verificationType && job.verificationType !== filters.verificationType) {
         return false;
       }
 
-      // Duration filter
       if (filters.duration) {
         const jobDuration = parseInt(job.duration);
         if (jobDuration !== parseInt(filters.duration)) {
@@ -159,23 +154,19 @@ function Dashboard() {
         }
       }
 
-      // Job type filter
       if (filters.jobType && job.type !== filters.jobType) {
         return false;
       }
 
-      // Work mode filter
       if (filters.workMode && job.workMode !== filters.workMode) {
         return false;
       }
 
-      // Posting days filter
       const postedDays = parseInt(job.postedDate);
       if (postedDays > filters.postingDays) {
         return false;
       }
 
-      // Min applicants filter
       if (job.applicants < filters.minApplicants) {
         return false;
       }
@@ -204,9 +195,17 @@ function Dashboard() {
   const getVerificationBadge = (type) => {
     const { color, label } = verificationTypes[type];
     return (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-        <VerifiedIcon sx={{ color, fontSize: 20 }} />
-        <Typography variant="caption" sx={{ color }}>
+      <Box sx={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: 0.5,
+        bgcolor: `${color}20`,
+        px: 1,
+        py: 0.5,
+        borderRadius: 1
+      }}>
+        <VerifiedIcon sx={{ color, fontSize: 16 }} />
+        <Typography variant="caption" sx={{ color, fontWeight: 600 }}>
           {label}
         </Typography>
       </Box>
@@ -214,24 +213,45 @@ function Dashboard() {
   };
 
   return (
-    <Box sx={{ display: 'flex', bgcolor: '#f5f5f5', minHeight: '100vh' }}>
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-        <Toolbar>
+    <Box sx={{ 
+      display: 'flex', 
+      bgcolor: '#f8fafc', 
+      minHeight: '100vh',
+      backgroundImage: 'radial-gradient(at top right, #f0f4ff 0%, #ffffff 70%)'
+    }}>
+      {/* App Bar */}
+      <AppBar 
+        position="fixed" 
+        sx={{ 
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          bgcolor: 'white',
+          color: 'text.primary',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          borderBottom: '1px solid rgba(0,0,0,0.08)'
+        }}
+      >
+        <Toolbar sx={{ px: { xs: 2, sm: 3 } }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={toggleSidebar}
-            sx={{ mr: 2 }}
+            sx={{ mr: 2, color: 'text.primary' }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" sx={{ 
+            fontWeight: 700,
+            background: 'linear-gradient(90deg, #3f51b5 0%, #2196f3 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
             Student Dashboard
           </Typography>
         </Toolbar>
       </AppBar>
 
+      {/* Mobile Sidebar */}
       <Drawer
         variant="temporary"
         open={sidebarOpen}
@@ -242,42 +262,73 @@ function Dashboard() {
           '& .MuiDrawer-paper': {
             width: 280,
             boxSizing: 'border-box',
+            bgcolor: 'background.paper',
+            boxShadow: '2px 0 20px rgba(0,0,0,0.05)'
           },
         }}
       >
         <Toolbar />
         <Box sx={{ overflow: 'auto', p: 2 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            mb: 2,
+            p: 2,
+            bgcolor: 'rgba(63, 81, 181, 0.05)',
+            borderRadius: 2
+          }}>
             <Avatar
               src={userInfo.avatar}
-              sx={{ width: 80, height: 80, mb: 1 }}
+              sx={{ 
+                width: 80, 
+                height: 80, 
+                mb: 1,
+                border: '3px solid #e3f2fd'
+              }}
             />
-            <Typography variant="h6">{userInfo.name}</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>{userInfo.name}</Typography>
           </Box>
-          <Divider />
+          <Divider sx={{ my: 1 }} />
           <List>
-            <ListItem>
-              <ListItemIcon>
-                <PersonIcon />
+            <ListItem sx={{ borderRadius: 1, '&:hover': { bgcolor: 'rgba(63, 81, 181, 0.05)' } }}>
+              <ListItemIcon sx={{ minWidth: 36 }}>
+                <PersonIcon color="primary" />
               </ListItemIcon>
-              <ListItemText primary="Profile" />
+              <ListItemText 
+                primary="Profile" 
+                primaryTypographyProps={{ fontWeight: 500 }}
+              />
             </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <EmailIcon />
+            <ListItem sx={{ borderRadius: 1, '&:hover': { bgcolor: 'rgba(63, 81, 181, 0.05)' } }}>
+              <ListItemIcon sx={{ minWidth: 36 }}>
+                <EmailIcon color="primary" />
               </ListItemIcon>
-              <ListItemText primary={userInfo.email} />
+              <ListItemText 
+                primary={userInfo.email} 
+                primaryTypographyProps={{ 
+                  variant: 'body2',
+                  color: 'text.secondary'
+                }}
+              />
             </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <SchoolIcon />
+            <ListItem sx={{ borderRadius: 1, '&:hover': { bgcolor: 'rgba(63, 81, 181, 0.05)' } }}>
+              <ListItemIcon sx={{ minWidth: 36 }}>
+                <SchoolIcon color="primary" />
               </ListItemIcon>
-              <ListItemText primary={userInfo.education} />
+              <ListItemText 
+                primary={userInfo.education} 
+                primaryTypographyProps={{ 
+                  variant: 'body2',
+                  color: 'text.secondary'
+                }}
+              />
             </ListItem>
           </List>
         </Box>
       </Drawer>
 
+      {/* Filters Sidebar */}
       <Drawer
         variant="permanent"
         sx={{
@@ -286,23 +337,44 @@ function Dashboard() {
           '& .MuiDrawer-paper': {
             width: 320,
             boxSizing: 'border-box',
-            borderRight: '1px solid rgba(0, 0, 0, 0.12)',
+            borderRight: '1px solid rgba(0, 0, 0, 0.08)',
             bgcolor: 'background.paper',
+            boxShadow: '2px 0 20px rgba(0,0,0,0.03)'
           },
         }}
       >
         <Toolbar />
-        <Box sx={{ overflow: 'auto', p: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-            <FilterIcon sx={{ mr: 1 }} />
-            <Typography variant="h6">Filters</Typography>
+        <Box sx={{ 
+          overflow: 'auto', 
+          p: 3,
+          height: '100%',
+          '&::-webkit-scrollbar': {
+            width: '6px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(0,0,0,0.1)',
+            borderRadius: '3px',
+          }
+        }}>
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            mb: 2,
+            p: 1,
+            bgcolor: 'rgba(63, 81, 181, 0.05)',
+            borderRadius: 1
+          }}>
+            <FilterIcon color="primary" sx={{ mr: 1 }} />
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>Filters</Typography>
             <IconButton 
               onClick={() => setFiltersOpen(!filtersOpen)}
               sx={{ ml: 'auto' }}
+              size="small"
             >
               <ExpandMoreIcon sx={{ 
                 transform: filtersOpen ? 'rotate(180deg)' : 'none',
-                transition: 'transform 0.3s'
+                transition: 'transform 0.3s',
+                color: 'text.secondary'
               }} />
             </IconButton>
           </Box>
@@ -313,9 +385,18 @@ function Dashboard() {
               <TextField
                 fullWidth
                 label="Skills"
-                placeholder="Enter skills (e.g., React, Python)"
+                placeholder="React, Python, etc."
                 value={filters.skills.join(', ')}
                 onChange={(e) => handleFilterChange('skills', e.target.value.split(',').map(s => s.trim()))}
+                size="small"
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '8px',
+                    '&.Mui-focused fieldset': {
+                      borderWidth: '1px'
+                    },
+                  },
+                }}
               />
 
               {/* Company Filter */}
@@ -324,6 +405,15 @@ function Dashboard() {
                 label="Company"
                 value={filters.company}
                 onChange={(e) => handleFilterChange('company', e.target.value)}
+                size="small"
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '8px',
+                    '&.Mui-focused fieldset': {
+                      borderWidth: '1px'
+                    },
+                  },
+                }}
               />
 
               {/* Location Filter */}
@@ -332,15 +422,27 @@ function Dashboard() {
                 label="Location"
                 value={filters.location}
                 onChange={(e) => handleFilterChange('location', e.target.value)}
+                size="small"
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '8px',
+                    '&.Mui-focused fieldset': {
+                      borderWidth: '1px'
+                    },
+                  },
+                }}
               />
 
               {/* Verification Type Filter */}
-              <FormControl fullWidth>
+              <FormControl fullWidth size="small">
                 <InputLabel>Verification Type</InputLabel>
                 <Select
                   value={filters.verificationType}
                   label="Verification Type"
                   onChange={(e) => handleFilterChange('verificationType', e.target.value)}
+                  sx={{
+                    borderRadius: '8px',
+                  }}
                 >
                   <MenuItem value="">All</MenuItem>
                   <MenuItem value="red">Basic</MenuItem>
@@ -351,12 +453,15 @@ function Dashboard() {
               </FormControl>
 
               {/* Duration Filter */}
-              <FormControl fullWidth>
+              <FormControl fullWidth size="small">
                 <InputLabel>Duration</InputLabel>
                 <Select
                   value={filters.duration}
                   label="Duration"
                   onChange={(e) => handleFilterChange('duration', e.target.value)}
+                  sx={{
+                    borderRadius: '8px',
+                  }}
                 >
                   <MenuItem value="">Any</MenuItem>
                   <MenuItem value="1">1 month</MenuItem>
@@ -367,12 +472,15 @@ function Dashboard() {
               </FormControl>
 
               {/* Job Type Filter */}
-              <FormControl fullWidth>
+              <FormControl fullWidth size="small">
                 <InputLabel>Job Type</InputLabel>
                 <Select
                   value={filters.jobType}
                   label="Job Type"
                   onChange={(e) => handleFilterChange('jobType', e.target.value)}
+                  sx={{
+                    borderRadius: '8px',
+                  }}
                 >
                   <MenuItem value="">All</MenuItem>
                   <MenuItem value="Full-time">Full-time</MenuItem>
@@ -381,12 +489,15 @@ function Dashboard() {
               </FormControl>
 
               {/* Work Mode Filter */}
-              <FormControl fullWidth>
+              <FormControl fullWidth size="small">
                 <InputLabel>Work Mode</InputLabel>
                 <Select
                   value={filters.workMode}
                   label="Work Mode"
                   onChange={(e) => handleFilterChange('workMode', e.target.value)}
+                  sx={{
+                    borderRadius: '8px',
+                  }}
                 >
                   <MenuItem value="">All</MenuItem>
                   <MenuItem value="Remote">Remote</MenuItem>
@@ -396,20 +507,32 @@ function Dashboard() {
               </FormControl>
 
               {/* Posting Days Filter */}
-              <Box>
-                <Typography gutterBottom>Posted within (days)</Typography>
+              <Box sx={{ px: 1 }}>
+                <Typography variant="body2" gutterBottom sx={{ fontWeight: 500 }}>
+                  Posted within (days)
+                </Typography>
                 <Slider
                   value={filters.postingDays}
                   onChange={(e, value) => handleFilterChange('postingDays', value)}
                   min={1}
                   max={30}
                   valueLabelDisplay="auto"
+                  sx={{
+                    color: '#3f51b5',
+                    '& .MuiSlider-valueLabel': {
+                      backgroundColor: '#3f51b5',
+                      borderRadius: 1,
+                      fontSize: 12,
+                    }
+                  }}
                 />
               </Box>
 
               {/* Min Applicants Filter */}
-              <Box>
-                <Typography gutterBottom>Minimum Applicants</Typography>
+              <Box sx={{ px: 1 }}>
+                <Typography variant="body2" gutterBottom sx={{ fontWeight: 500 }}>
+                  Minimum Applicants
+                </Typography>
                 <Slider
                   value={filters.minApplicants}
                   onChange={(e, value) => handleFilterChange('minApplicants', value)}
@@ -417,6 +540,14 @@ function Dashboard() {
                   max={500}
                   step={10}
                   valueLabelDisplay="auto"
+                  sx={{
+                    color: '#3f51b5',
+                    '& .MuiSlider-valueLabel': {
+                      backgroundColor: '#3f51b5',
+                      borderRadius: 1,
+                      fontSize: 12,
+                    }
+                  }}
                 />
               </Box>
 
@@ -434,7 +565,16 @@ function Dashboard() {
                   postingDays: 7,
                   minApplicants: 0,
                 })}
-                sx={{ mt: 2 }}
+                sx={{ 
+                  mt: 1,
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  fontWeight: 500,
+                  borderWidth: '1.5px',
+                  '&:hover': {
+                    borderWidth: '1.5px'
+                  }
+                }}
               >
                 Clear All Filters
               </Button>
@@ -443,16 +583,37 @@ function Dashboard() {
         </Box>
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      {/* Main Content */}
+      <Box component="main" sx={{ 
+        flexGrow: 1, 
+        p: 3,
+        bgcolor: '#f8fafc',
+      }}>
         <Toolbar />
-        <Box sx={{ maxWidth: 680, mx: 'auto' }}>
+        <Box sx={{ 
+          maxWidth: 800, 
+          mx: 'auto',
+          '&::-webkit-scrollbar': {
+            height: '6px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(0,0,0,0.1)',
+            borderRadius: '3px',
+          }
+        }}>
           {filteredJobs.length === 0 ? (
-            <Paper sx={{ p: 3, textAlign: 'center' }}>
-              <Typography variant="h6" color="text.secondary">
+            <Paper sx={{ 
+              p: 4, 
+              textAlign: 'center',
+              borderRadius: '12px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+              bgcolor: 'background.paper'
+            }}>
+              <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
                 No jobs match your current filters
               </Typography>
               <Button
-                variant="text"
+                variant="outlined"
                 onClick={() => setFilters({
                   skills: [],
                   company: '',
@@ -464,7 +625,12 @@ function Dashboard() {
                   postingDays: 7,
                   minApplicants: 0,
                 })}
-                sx={{ mt: 1 }}
+                sx={{ 
+                  mt: 1,
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  fontWeight: 500
+                }}
               >
                 Clear Filters
               </Button>
@@ -473,83 +639,145 @@ function Dashboard() {
             filteredJobs.map((job) => (
               <Paper
                 key={job.id}
-                elevation={1}
+                elevation={0}
                 sx={{
-                  mb: 2,
-                  borderRadius: 2,
+                  mb: 3,
+                  borderRadius: '12px',
                   overflow: 'hidden',
+                  bgcolor: 'background.paper',
+                  border: '1px solid rgba(0, 0, 0, 0.08)',
+                  transition: 'all 0.3s ease',
                   '&:hover': {
-                    boxShadow: theme.shadows[4],
+                    boxShadow: '0 10px 25px rgba(0,0,0,0.08)',
+                    transform: 'translateY(-2px)',
+                    borderColor: 'rgba(63, 81, 181, 0.3)'
                   },
                 }}
               >
                 {/* Post Header */}
-                <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Avatar src={job.companyLogo} sx={{ width: 48, height: 48 }} />
+                <Box sx={{ 
+                  p: 2, 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 1.5,
+                  borderBottom: '1px solid rgba(0, 0, 0, 0.05)'
+                }}>
+                  <Avatar 
+                    src={job.companyLogo} 
+                    sx={{ 
+                      width: 48, 
+                      height: 48,
+                      border: '1px solid rgba(0,0,0,0.08)'
+                    }} 
+                  />
                   <Box sx={{ flexGrow: 1 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                         {job.company}
                       </Typography>
                       {getVerificationBadge(job.verificationType)}
                     </Box>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <TimeIcon fontSize="inherit" />
                       {job.postedDate} • {job.applicants} applicants
                     </Typography>
                   </Box>
-                  <IconButton size="small">
+                  <IconButton size="small" sx={{ color: 'text.secondary' }}>
                     <MoreHorizIcon />
                   </IconButton>
                 </Box>
 
                 {/* Post Content */}
                 <Box sx={{ px: 2, pb: 2 }}>
-                  <Typography variant="h6" color="primary" gutterBottom>
+                  <Typography variant="h6" sx={{ 
+                    fontWeight: 700,
+                    mt: 1,
+                    mb: 1.5,
+                    background: 'linear-gradient(90deg, #3f51b5 0%, #2196f3 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}>
                     {job.position}
                   </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                    <LocationIcon color="action" fontSize="small" />
-                    <Typography variant="body2">{job.location}</Typography>
+                  <Box sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 1, 
+                    mb: 1.5,
+                    flexWrap: 'wrap'
+                  }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <LocationIcon color="action" fontSize="small" />
+                      <Typography variant="body2">{job.location}</Typography>
+                    </Box>
                     <Chip
                       label={job.type}
                       size="small"
                       color="primary"
                       variant="outlined"
-                      sx={{ ml: 1 }}
+                      sx={{ 
+                        fontWeight: 500,
+                        borderWidth: '1.5px'
+                      }}
                     />
                     <Chip
                       label={job.workMode}
                       size="small"
                       color="secondary"
                       variant="outlined"
-                      sx={{ ml: 1 }}
+                      sx={{ 
+                        fontWeight: 500,
+                        borderWidth: '1.5px'
+                      }}
                     />
                     <Chip
                       label={job.duration}
                       size="small"
                       color="info"
                       variant="outlined"
-                      sx={{ ml: 1 }}
+                      sx={{ 
+                        fontWeight: 500,
+                        borderWidth: '1.5px'
+                      }}
                     />
                   </Box>
-                  <Typography variant="body1" sx={{ mb: 2 }}>
+                  <Typography variant="body1" sx={{ 
+                    mb: 2,
+                    color: 'text.secondary',
+                    lineHeight: 1.6
+                  }}>
                     {job.description}
                   </Typography>
-                  <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mb: 2 }}>
+                  <Box sx={{ 
+                    display: 'flex', 
+                    gap: 0.5, 
+                    flexWrap: 'wrap', 
+                    mb: 2 
+                  }}>
                     {job.requirements.map((req, idx) => (
                       <Chip
                         key={idx}
                         label={req}
                         size="small"
                         sx={{
-                          bgcolor: theme.palette.primary.light,
-                          color: 'white',
+                          bgcolor: '#e3f2fd',
+                          color: '#1565c0',
                           fontSize: '0.75rem',
+                          fontWeight: 500,
+                          height: '24px'
                         }}
                       />
                     ))}
                   </Box>
-                  <Typography variant="subtitle2" color="primary" sx={{ mb: 2 }}>
+                  <Typography variant="subtitle2" sx={{ 
+                    mb: 2,
+                    fontWeight: 600,
+                    color: '#2e7d32',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 0.5
+                  }}>
+                    <BusinessIcon fontSize="small" />
                     {job.salary}
                   </Typography>
 
@@ -569,16 +797,36 @@ function Dashboard() {
                       sx={{
                         flexGrow: 1,
                         textTransform: 'none',
-                        borderRadius: 2,
+                        borderRadius: '8px',
                         mr: 1,
+                        fontWeight: 600,
+                        py: 1,
+                        background: 'linear-gradient(90deg, #3f51b5 0%, #2196f3 100%)',
+                        boxShadow: 'none',
+                        '&:hover': {
+                          boxShadow: '0 4px 12px rgba(33, 150, 243, 0.3)',
+                          background: 'linear-gradient(90deg, #3949ab 0%, #1e88e5 100%)'
+                        }
                       }}
                     >
                       Apply Now
                     </Button>
-                    <IconButton>
+                    <IconButton sx={{ 
+                      color: 'text.secondary',
+                      '&:hover': {
+                        color: '#3f51b5',
+                        bgcolor: 'rgba(63, 81, 181, 0.08)'
+                      }
+                    }}>
                       <BookmarkIcon />
                     </IconButton>
-                    <IconButton>
+                    <IconButton sx={{ 
+                      color: 'text.secondary',
+                      '&:hover': {
+                        color: '#3f51b5',
+                        bgcolor: 'rgba(63, 81, 181, 0.08)'
+                      }
+                    }}>
                       <ShareIcon />
                     </IconButton>
                   </Box>
